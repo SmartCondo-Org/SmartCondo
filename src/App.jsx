@@ -32,8 +32,7 @@ const App = () => {
   const [showConsentModal, setShowConsentModal] = useState(true);
   const [userSettings, setUserSettings] = useState({
     showPhoneToNeighbors: false,
-    showEmailToNeighbors: false,
-    marketingEmails: false
+    showEmailToNeighbors: false
   });
 
   // --- MOCK DATA ---
