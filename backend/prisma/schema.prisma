@@ -53,6 +53,7 @@ model Transacao {
 
   condominio       Condominio   @relation(fields: [id_condominio], references: [id_condominio])
   apartamento      Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento])
+  descricao String @db.VarChar(255)
 }
 
 model Ocorrencia {
