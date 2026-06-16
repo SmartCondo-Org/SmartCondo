@@ -24,7 +24,6 @@ import {
   MessageSquare,
   Wrench,
   ChevronDown,
-  Search,
   Filter,
   MoreVertical,
   History,
