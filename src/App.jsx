@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-// Certifique-se de que esta linha existe no seu App.jsx local:
-// import './index.css'; 
-
 import { 
   LayoutDashboard, 
   Building2, 
@@ -23,7 +20,21 @@ import {
   ShieldCheck, 
   EyeOff, 
   Trash2, 
-  Lock 
+  Lock, 
+  MessageSquare,
+  Wrench,
+  ChevronDown,
+  Search,
+  Filter,
+  MoreVertical,
+  History,
+  Scale,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  PieChart,
+  CreditCard,
+  FileSpreadsheet
 } from 'lucide-react';
 
 const App = () => {
@@ -35,24 +46,25 @@ const App = () => {
     showEmailToNeighbors: false
   });
 
-  // --- MOCK DATA ---
+
+  // --- DADOS DO DASHBOARD E FINANCEIRO ---
   const stats = [
-    { title: 'Saldo Total', value: 'R$ 45.230,00', icon: <DollarSign className="text-green-600" size={20} />, change: '+2.5%' },
-    { title: 'Inadimplência', value: '8.2%', icon: <AlertTriangle className="text-red-500" size={20} />, change: '-1.0%' },
-    { title: 'Reservas Hoje', value: '4', icon: <Calendar className="text-blue-500" size={20} />, change: 'Espaços ocupados' },
-    { title: 'Chamados Abertos', value: '12', icon: <FileText className="text-orange-500" size={20} />, change: '5 urgentes' },
+    { title: 'Saldo Total', value: 'R$ 45.230,00', icon: <DollarSign className="text-green-600" size={20} />, change: 'Conciliado' },
+    { title: 'Inadimplência', value: '12%', icon: <AlertTriangle className="text-red-500" size={20} />, change: '+2% este mês' },
+    { title: 'Ocorrências Ativas', value: '08', icon: <MessageSquare className="text-blue-500" size={20} />, change: '4 de barulho' },
+    { title: 'Manutenções', value: '03', icon: <Wrench className="text-orange-500" size={20} />, change: 'Elevador Bloco F' },
   ];
 
-  const moradores = [
-    { id: 1, nome: 'Ana Silva', apto: '101', status: 'Adimplente', contato: '(11) 98888-0001' },
-    { id: 2, nome: 'João Pereira', apto: '102', status: 'Inadimplente', contato: '(11) 98888-0002' },
-    { id: 3, nome: 'Carla Souza', apto: '201', status: 'Adimplente', contato: '(11) 98888-0003' },
+  const inadimplentes = [
+    { unidade: 'Apto 204', valor: 'R$ 1.200,00', tempo: '2 meses', risco: 'Médio' },
+    { unidade: 'Apto 501', valor: 'R$ 4.500,00', tempo: '6 meses', risco: 'Alto' },
+    { unidade: 'Bloco B - 12', valor: 'R$ 600,00', tempo: '1 mês', risco: 'Baixo' },
   ];
 
-  const reservas = [
-    { id: 1, espaco: 'Salão de Festas', data: '15 Out 2023', morador: 'Apto 101', status: 'Confirmado' },
-    { id: 2, espaco: 'Churrasqueira A', data: '16 Out 2023', morador: 'Apto 304', status: 'Pendente' },
-    { id: 3, espaco: 'Academia', data: '15 Out 2023', morador: 'Apto 215', status: 'Confirmado' },
+  const transacoesRecentes = [
+    { id: 1, descricao: 'Manutenção Elevador', categoria: 'Manutenção', valor: -1200.00, data: '19/03', status: 'Pago' },
+    { id: 2, descricao: 'Cota Condominial (Lote)', categoria: 'Receita', valor: 28450.00, data: '18/03', status: 'Recebido' },
+    { id: 3, descricao: 'Energia Áreas Comuns', categoria: 'Utilidades', valor: -3400.50, data: '15/03', status: 'Pago' },
   ];
 
   const logsPrivacidade = [
@@ -61,7 +73,31 @@ const App = () => {
     { id: 3, acao: 'Alteração de permissão de reserva', usuario: 'Sistema Automático', data: '16/03/2026 22:00' },
   ];
 
-  // --- COMPONENTS ---
+  // --- DADOS DE OCORRÊNCIAS ---
+  const [ocorrencias] = useState([
+    { 
+      id: 1, 
+      tipo: 'Barulho', 
+      morador: 'Apto 101 (Ana Silva)', 
+      status: 'Em Análise', 
+      gravidade: 'Média', 
+      data: '18/03/2026',
+      descricao: 'Som alto após as 22h vindo da unidade superior.',
+      historico: ['18/03: Notificação enviada via app']
+    },
+    { 
+      id: 2, 
+      tipo: 'Vazamento', 
+      morador: 'Apto 402 (Marcos)', 
+      status: 'Aguardando Técnico', 
+      gravidade: 'Alta', 
+      data: '18/03/2026',
+      descricao: 'Infiltração no teto da casa de banho principal.',
+      historico: ['18/03: Contactada a Elevadores Tech']
+    }
+  ]);
+
+  // --- COMPONENTES DE UI ---
   const SidebarItem = ({ id, icon, label }) => (
     <button
       onClick={() => setActiveTab(id)}
@@ -70,38 +106,29 @@ const App = () => {
       }`}
     >
       {icon}
-      <span className={`font-semibold ${!isSidebarOpen && 'hidden'}`}>{label}</span>
+      <span className={`font-bold ${!isSidebarOpen && 'hidden'}`}>{label}</span>
     </button>
   );
 
   const Header = ({ title, subtitle }) => (
-    <div className="mb-8 flex justify-between items-center select-text">
-      <div className="block">
-        <h1 className="text-3xl font-black text-slate-900 leading-tight block mb-1">
-          {title}
-        </h1>
-        <p className="text-slate-600 font-bold text-lg block">
-          {subtitle}
-        </p>
-      </div>
-      <div className="flex items-center space-x-4">
-        <div className="h-12 w-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white">
-          R
-        </div>
-      </div>
+    <div className="mb-8">
+      <h1 className="text-3xl font-black text-slate-900 leading-tight mb-1">{title}</h1>
+      <p className="text-slate-600 font-bold text-lg">{subtitle}</p>
     </div>
   );
 
-  // --- VIEWS ---
+  // --- RENDERIZADORES DE ABAS ---
+
   const renderDashboard = () => (
     <>
-      <Header title="Olá, Síndico Ricardo" subtitle="Painel de Gestão e Privacidade Ativa" />
+      <Header title="Olá, Síndico Ricardo" subtitle="Seu balancete automático está pronto." />
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-transform hover:scale-[1.02]">
+          <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 transition-all group">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-slate-50 rounded-lg">{stat.icon}</div>
-              <span className={`text-[10px] font-black px-2 py-1 rounded-full ${stat.change.includes('+') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-blue-50 transition-colors">{stat.icon}</div>
+              <span className="text-[10px] font-black px-2 py-1 rounded-full bg-slate-100 text-slate-600 uppercase">
                 {stat.change}
               </span>
             </div>
@@ -110,16 +137,45 @@ const App = () => {
           </div>
         ))}
       </div>
-      <div className="bg-blue-50 border-2 border-blue-100 rounded-[24px] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center space-x-4">
-          <div className="bg-blue-600 p-3 rounded-2xl text-white shadow-md shadow-blue-100">
-            <ShieldCheck size={28} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+              <TrendingUp className="text-blue-600" /> Fluxo de Caixa (Mensal)
+            </h3>
           </div>
-          <div>
-            <h4 className="font-black text-blue-900 text-lg uppercase tracking-tight">Privacidade Ativa</h4>
-            <p className="text-sm text-blue-800 font-semibold italic">Este protótipo está configurado para conformidade total com a LGPD.</p>
+          <div className="h-48 w-full bg-slate-50 rounded-2xl flex items-end justify-around p-4 gap-2">
+            {[40, 70, 45, 90, 65, 80, 95].map((h, i) => (
+              <div key={i} className="flex flex-col items-center gap-2 w-full max-w-[40px]">
+                <div className="w-full bg-blue-500 rounded-t-lg transition-all hover:bg-blue-600" style={{ height: `${h}%` }}></div>
+                <span className="text-[10px] font-bold text-slate-400">0{i+1}/03</span>
+              </div>
+            ))}
           </div>
         </div>
+
+        <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+          <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+             <AlertTriangle className="text-red-500" /> Inadimplência Crítica
+          </h3>
+          <div className="space-y-4">
+            {inadimplentes.slice(0, 2).map((inad, i) => (
+              <div key={i} className="p-4 bg-red-50 rounded-2xl border border-red-100">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-black text-slate-800">{inad.unidade}</span>
+                  <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">Risco {inad.risco}</span>
+                </div>
+                <p className="text-xl font-black text-red-700">{inad.valor}</p>
+                <p className="text-xs text-red-600/70 font-bold">Atraso: {inad.tempo}</p>
+              </div>
+            ))}
+            <button onClick={() => setActiveTab('financeiro')} className="w-full py-3 text-blue-600 font-black text-sm hover:bg-blue-50 rounded-xl transition-all">
+              Ver gestão financeira completa
+            </button>
+          </div>
+        </div>
+
         <button onClick={() => setActiveTab('privacidade')} className="w-full md:w-auto text-blue-700 font-black text-sm bg-white px-6 py-3 rounded-xl shadow-md border border-blue-100 hover:bg-blue-50 transition-all active:scale-95">
           Definições de Privacidade
         </button>
@@ -127,66 +183,159 @@ const App = () => {
     </>
   );
 
-  const renderMoradores = () => (
-    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-      <Header title="Gestão de Moradores" subtitle="Visualização restrita ao Síndico" />
-      <div className="overflow-x-auto">
-        <table className="w-full text-left min-w-[500px]">
-          <thead>
-            <tr className="text-xs font-black text-slate-400 uppercase tracking-widest border-b-2 border-slate-100">
-              <th className="px-4 py-4">Nome</th>
-              <th className="px-4 py-4">Apto</th>
-              <th className="px-4 py-4">Status</th>
-              <th className="px-4 py-4 text-center">Privacidade</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {moradores.map(m => (
-              <tr key={m.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-4 py-5 font-black text-slate-800 text-sm">{m.nome}</td>
-                <td className="px-4 py-5 text-sm font-bold text-slate-600">{m.apto}</td>
-                <td className="px-4 py-5">
-                  <span className={`text-[10px] px-2 py-1 rounded-full font-black ${m.status === 'Adimplente' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {m.status}
-                  </span>
-                </td>
-                <td className="px-4 py-5 text-center"><EyeOff size={16} className="text-slate-400 inline" /></td>
-              </tr>
+  const renderFinanceiro = () => (
+    <div className="space-y-8">
+      <Header title="Gestão Financeira" subtitle="Transparência total no fluxo de caixa do condomínio." />
+
+      {/* Resumo de Contas */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-[32px] text-white shadow-xl shadow-blue-200">
+          <p className="text-blue-100 font-bold uppercase tracking-widest text-xs mb-2">Disponível em Caixa</p>
+          <h2 className="text-4xl font-black mb-6">R$ 45.230,00</h2>
+          <div className="flex gap-4">
+            <button className="flex-1 bg-white/20 hover:bg-white/30 p-3 rounded-xl backdrop-blur-sm transition-all flex items-center justify-center gap-2 font-bold text-sm">
+              <Plus size={16} /> Receita
+            </button>
+            <button className="flex-1 bg-white/20 hover:bg-white/30 p-3 rounded-xl backdrop-blur-sm transition-all flex items-center justify-center gap-2 font-bold text-sm">
+              <Download size={16} /> Relatório
+            </button>
+          </div>
+        </div>
+
+        <div className="md:col-span-2 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-black text-slate-800 text-lg">Distribuição de Gastos</h3>
+            <PieChart className="text-slate-300" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: 'Manutenção', val: '35%', color: 'bg-orange-500' },
+              { label: 'Pessoal', val: '45%', color: 'bg-blue-500' },
+              { label: 'Reserva', val: '15%', color: 'bg-green-500' },
+              { label: 'Outros', val: '5%', color: 'bg-slate-400' }
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${item.color}`}></div>
+                  <span className="text-xs font-bold text-slate-500">{item.label}</span>
+                </div>
+                <span className="text-xl font-black text-slate-800">{item.val}</span>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Histórico de Transações */}
+        <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-black text-slate-800 text-lg">Extrato Recente</h3>
+            <button className="text-blue-600 font-bold text-xs">Ver Tudo</button>
+          </div>
+          <div className="space-y-4">
+            {transacoesRecentes.map(t => (
+              <div key={t.id} className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-2xl transition-all border border-transparent hover:border-slate-100">
+                <div className="flex items-center gap-4">
+                  <div className={`p-3 rounded-xl ${t.valor > 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                    {t.valor > 0 ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
+                  </div>
+                  <div>
+                    <h4 className="font-black text-slate-800 text-sm">{t.descricao}</h4>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{t.data} • {t.categoria}</p>
+                  </div>
+                </div>
+                <span className={`font-black ${t.valor > 0 ? 'text-green-600' : 'text-slate-900'}`}>
+                  {t.valor > 0 ? '+' : ''}{t.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Detalhe de Inadimplência */}
+        <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+          <h3 className="font-black text-slate-800 text-lg mb-6">Controle de Adimplência</h3>
+          <div className="overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left border-b border-slate-50">
+                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase">Unidade</th>
+                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase">Dívida</th>
+                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase">Status</th>
+                  <th className="pb-4"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {inadimplentes.map((inad, i) => (
+                  <tr key={i} className="group">
+                    <td className="py-4 font-black text-slate-800 text-sm">{inad.unidade}</td>
+                    <td className="py-4 font-bold text-slate-600 text-sm">{inad.valor}</td>
+                    <td className="py-4">
+                      <span className={`text-[10px] font-black px-2 py-1 rounded uppercase ${
+                        inad.risco === 'Alto' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'
+                      }`}>
+                        {inad.tempo}
+                      </span>
+                    </td>
+                    <td className="py-4 text-right">
+                      <button className="p-2 text-slate-300 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                        <MessageSquare size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
 
-  const renderReservas = () => (
-    <>
-      <Header title="Agenda de Espaços" subtitle="Gestão de áreas comuns" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {reservas.map(r => (
-          <div key={r.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition-all">
-            <div className="flex justify-between items-center mb-4">
-              <span className={`text-[10px] font-black px-3 py-1 rounded-full ${r.status === 'Confirmado' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
-                {r.status}
-              </span>
-              <Clock size={16} className="text-slate-400" />
-            </div>
-            <h3 className="font-black text-slate-900 text-lg mb-1 tracking-tight">{r.espaco}</h3>
-            <div className="flex items-center text-xs text-slate-500 space-x-2 mb-4 font-bold">
-              <Calendar size={12} /> <span>{r.data}</span>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-black text-blue-600">U</div>
-              <span className="text-sm font-black text-slate-700">{r.morador}</span>
+  const renderOcorrencias = () => (
+    <div className="space-y-6">
+      <Header title="Ocorrências & Mediação" subtitle="Registro formal protegido por lei e normas internas." />
+      
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="flex-1 relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input type="text" placeholder="Buscar unidade ou tipo..." className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium shadow-sm" />
+        </div>
+        <button className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+          <Plus size={18} /> Registrar Ocorrência
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {ocorrencias.map(oc => (
+          <div key={oc.id} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+            <div className="p-6">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-2xl ${oc.gravidade === 'Alta' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                    <AlertTriangle size={20} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Caso #{oc.id}</span>
+                    <h3 className="text-lg font-black text-slate-900">{oc.tipo} - {oc.morador}</h3>
+                  </div>
+                </div>
+                <span className="text-xs font-black px-4 py-2 rounded-full bg-blue-100 text-blue-700">{oc.status}</span>
+              </div>
+              <p className="text-slate-600 font-medium mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100 leading-relaxed">{oc.descricao}</p>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-4 border-t border-slate-50 gap-4">
+                <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                  <span className="flex items-center gap-1"><Clock size={14} /> {oc.data}</span>
+                  <span className="flex items-center gap-1"><Scale size={14} /> Ver Base Jurídica</span>
+                </div>
+                <button className="w-full md:w-auto px-6 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs hover:bg-slate-800 transition-all">Atualizar Mediação</button>
+              </div>
             </div>
           </div>
         ))}
-        <div className="border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center p-6 text-slate-400 cursor-pointer hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 transition-all min-h-[180px] group">
-          <Plus size={40} className="group-hover:scale-110 transition-transform" />
-          <span className="font-black mt-2 uppercase text-xs tracking-widest">Nova Reserva</span>
-        </div>
       </div>
-    </>
+    </div>
   );
 
   const renderPrivacidade = () => (
@@ -297,7 +446,7 @@ const App = () => {
         </div>
       )}
 
-      {/* Sidebar - Mobile Responsive */}
+      {/* Sidebar */}
       <aside className={`${isSidebarOpen ? 'w-full md:w-72' : 'w-full md:w-24'} bg-white border-b md:border-r border-slate-200 p-6 transition-all duration-300 flex flex-col sticky top-0 md:h-screen z-40 shadow-sm`}>
         <div className="flex items-center justify-between md:justify-start md:space-x-4 mb-10 px-2">
           <div className="flex items-center space-x-3">
@@ -313,18 +462,23 @@ const App = () => {
 
         <nav className={`space-y-3 ${!isSidebarOpen && 'hidden md:block'}`}>
           <SidebarItem id="dashboard" icon={<LayoutDashboard size={22} />} label="Dashboard" />
-          <SidebarItem id="moradores" icon={<Users size={22} />} label="Moradores" />
-          <SidebarItem id="reservas" icon={<Calendar size={22} />} label="Reservas" />
-          <SidebarItem id="privacidade" icon={<ShieldCheck size={22} />} label="Privacidade" />
+          <SidebarItem id="financeiro" icon={<DollarSign size={22} />} label="Financeiro" />
+          <SidebarItem id="conflitos" icon={<MessageSquare size={22} />} label="Ocorrências" />
+          <SidebarItem id="privacidade" icon={<ShieldCheck size={22} />} label="Segurança/LGPD" />
         </nav>
+
+        <div className={`mt-auto p-4 bg-slate-50 rounded-2xl border border-slate-100 ${!isSidebarOpen && 'hidden'}`}>
+          <p className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Suporte Jurídico</p>
+          <p className="text-xs font-bold text-slate-600 leading-tight">Canal direto de apoio ao síndico ativo.</p>
+        </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Conteúdo Principal */}
       <main className="flex-1 p-6 md:p-10 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           {activeTab === 'dashboard' && renderDashboard()}
-          {activeTab === 'moradores' && renderMoradores()}
-          {activeTab === 'reservas' && renderReservas()}
+          {activeTab === 'financeiro' && renderFinanceiro()}
+          {activeTab === 'conflitos' && renderOcorrencias()}
           {activeTab === 'privacidade' && renderPrivacidade()}
         </div>
       </main>
