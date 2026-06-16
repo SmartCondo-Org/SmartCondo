@@ -9,11 +9,11 @@ datasource db {
 
 model Usuario {
   id_usuario     Int          @id @default(autoincrement())
-  cpf            String       @unique @db.VarChar(11)
-  nome           String       @db.VarChar(100)
-  email          String       @unique @db.VarChar(100)
+  cpf            String       @unique @db.VarChar(14)
+  nome           String       @db.VarChar(150)
+  email          String       @unique @db.VarChar(150)
   senha_hash     String       @db.VarChar(255)
-  tipo_usuario   String       @db.VarChar(50) // 'Administrador', 'Morador', 'Sindico'
+  tipo_usuario   String       @db.VarChar(20) // 'Administrador', 'Morador', 'Sindico'
   
   id_apartamento Int?
   apartamento    Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento])
@@ -21,8 +21,8 @@ model Usuario {
 
 model Condominio {
   id_condominio Int      @id @default(autoincrement())
-  nome          String   @db.VarChar(100)
-  cnpj          String   @unique @db.VarChar(14)
+  nome          String   @db.VarChar(150)
+  cnpj          String   @unique @db.VarChar(18)
   endereco      String   @db.VarChar(255)
 
   apartamentos  Apartamento[]
@@ -45,24 +45,24 @@ model Transacao {
   id_transacao     Int          @id @default(autoincrement())
   id_condominio    Int
   id_apartamento   Int?
-  tipo             String       @db.VarChar(20) // 'Despesa', 'Receita'
+  descricao        String       @db.VarChar(255)
+  tipo             String       @db.VarChar(10) // 'Despesa', 'Receita'
   valor            Decimal      @db.Decimal(10, 2)
-  status_pagamento String       @db.VarChar(20) // 'Atrasado', 'Pendente', 'Pago'
+  status_pagamento String       @db.VarChar(15) // 'Atrasado', 'Pendente', 'Pago'
   data_vencimento  DateTime
   data_pagamento   DateTime?
 
   condominio       Condominio   @relation(fields: [id_condominio], references: [id_condominio])
   apartamento      Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento])
-  descricao String @db.VarChar(255)
 }
 
 model Ocorrencia {
   id_ocorrencia  Int         @id @default(autoincrement())
   id_apartamento Int
   titulo         String      @db.VarChar(100)
-  descricao      String      @db.Text
-  gravidade      String      @db.VarChar(20) // 'Alta', 'Media', 'Baixa'
-  status         String      @db.VarChar(20) // 'Resolvida', 'Em_Analise', 'Aberta'
+  descricao      String      @db.VarChar(Max)
+  gravidade      String      @db.VarChar(10) // 'Alta', 'Media', 'Baixa'
+  status         String      @db.VarChar(15) // 'Resolvida', 'Em_Analise', 'Aberta'
 
   apartamento    Apartamento @relation(fields: [id_apartamento], references: [id_apartamento])
 }
