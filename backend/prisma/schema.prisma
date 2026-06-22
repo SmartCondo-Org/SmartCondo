@@ -52,8 +52,8 @@ model Transacao {
   data_vencimento  DateTime
   data_pagamento   DateTime?
 
-  condominio       Condominio   @relation(fields: [id_condominio], references: [id_condominio])
-  apartamento      Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento])
+  condominio       Condominio   @relation(fields: [id_condominio], references: [id_condominio], onUpdate: NoAction, onDelete: NoAction)
+  apartamento      Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento], onUpdate: NoAction, onDelete: NoAction)
 }
 
 model Ocorrencia {
