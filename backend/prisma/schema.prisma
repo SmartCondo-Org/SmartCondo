@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id_usuario     Int           @id @default(autoincrement())
+  cpf            String        @unique @db.VarChar(14)
+  nome           String        @db.VarChar(150)
+  email          String        @unique @db.VarChar(150)
+  senha_hash     String        @db.VarChar(255)
+  tipo_usuario   String        @db.VarChar(20) // 'Administrador', 'Morador', 'Sindico'
+  telefone       String?       @db.VarChar(20)
+  
+  apartamentos   Apartamento[] // Relação 1:N (1 Usuário pode ser titular de N Apartamentos)
+}
+
+model Condominio {
+  id_condominio Int           @id @default(autoincrement())
+  nome          String        @db.VarChar(150)
+  cnpj          String        @unique @db.VarChar(18)
+  endereco      String        @db.VarChar(255)
+
+  apartamentos  Apartamento[]
+  transacoes    Transacao[]
+}
+
+model Apartamento {
+  id_apartamento Int          @id @default(autoincrement())
+  bloco          String       @db.VarChar(10)
+  numero         String       @db.VarChar(10)
+  id_condominio  Int
+  id_usuario     Int?         // Chave estrangeira real no banco
+
+  condominio     Condominio   @relation(fields: [id_condominio], references: [id_condominio])
+  usuario        Usuario?     @relation(fields: [id_usuario], references: [id_usuario])
+  ocorrencias    Ocorrencia[]
+  transacoes     Transacao[]
+}
+
+model Transacao {
+  id_transacao     Int          @id @default(autoincrement())
+  id_condominio    Int
+  id_apartamento   Int?
+  descricao        String       @db.VarChar(255)
+  tipo             String       @db.VarChar(10) // 'Despesa', 'Receita'
+  valor            Decimal      @db.Decimal(10, 2)
+  status_pagamento String       @db.VarChar(15) // 'Atrasado', 'Pendente', 'Pago'
+  data_vencimento  DateTime
+  data_pagamento   DateTime?
+
+  condominio       Condominio   @relation(fields: [id_condominio], references: [id_condominio], onUpdate: NoAction, onDelete: NoAction)
+  apartamento      Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento], onUpdate: NoAction, onDelete: NoAction)
+}
+
+model Ocorrencia {
+  id_ocorrencia    Int          @id @default(autoincrement())
+  id_apartamento   Int
+  titulo           String       @db.VarChar(100)
+  descricao        String       @db.VarChar(Max)
+  gravidade        String       @db.VarChar(10) // 'Alta', 'Media', 'Baixa'
+  status           String       @db.VarChar(15) // 'Resolvida', 'Em_Analise', 'Aberta'
+  data_criacao     DateTime?    @default(now())
+  data_atualizacao DateTime?    @updatedAt
+
+  apartamento      Apartamento  @relation(fields: [id_apartamento], references: [id_apartamento])
+}
