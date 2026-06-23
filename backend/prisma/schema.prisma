@@ -8,35 +8,36 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario     Int          @id @default(autoincrement())
-  cpf            String       @unique @db.VarChar(14)
-  nome           String       @db.VarChar(150)
-  email          String       @unique @db.VarChar(150)
-  senha_hash     String       @db.VarChar(255)
-  tipo_usuario   String       @db.VarChar(20) // 'Administrador', 'Morador', 'Sindico'
+  id_usuario     Int           @id @default(autoincrement())
+  cpf            String        @unique @db.VarChar(14)
+  nome           String        @db.VarChar(150)
+  email          String        @unique @db.VarChar(150)
+  senha_hash     String        @db.VarChar(255)
+  tipo_usuario   String        @db.VarChar(20) // 'Administrador', 'Morador', 'Sindico'
+  telefone       String?       @db.VarChar(20)
   
-  id_apartamento Int?
-  apartamento    Apartamento? @relation(fields: [id_apartamento], references: [id_apartamento])
+  apartamentos   Apartamento[] // Relação 1:N (1 Usuário pode ser titular de N Apartamentos)
 }
 
 model Condominio {
-  id_condominio Int      @id @default(autoincrement())
-  nome          String   @db.VarChar(150)
-  cnpj          String   @unique @db.VarChar(18)
-  endereco      String   @db.VarChar(255)
+  id_condominio Int           @id @default(autoincrement())
+  nome          String        @db.VarChar(150)
+  cnpj          String        @unique @db.VarChar(18)
+  endereco      String        @db.VarChar(255)
 
   apartamentos  Apartamento[]
   transacoes    Transacao[]
 }
 
 model Apartamento {
-  id_apartamento Int         @id @default(autoincrement())
-  bloco          String      @db.VarChar(10)
-  numero         String      @db.VarChar(10)
+  id_apartamento Int          @id @default(autoincrement())
+  bloco          String       @db.VarChar(10)
+  numero         String       @db.VarChar(10)
   id_condominio  Int
-  
-  condominio     Condominio  @relation(fields: [id_condominio], references: [id_condominio])
-  usuarios       Usuario[]
+  id_usuario     Int?         // Chave estrangeira real no banco
+
+  condominio     Condominio   @relation(fields: [id_condominio], references: [id_condominio])
+  usuario        Usuario?     @relation(fields: [id_usuario], references: [id_usuario])
   ocorrencias    Ocorrencia[]
   transacoes     Transacao[]
 }
@@ -57,12 +58,14 @@ model Transacao {
 }
 
 model Ocorrencia {
-  id_ocorrencia  Int         @id @default(autoincrement())
-  id_apartamento Int
-  titulo         String      @db.VarChar(100)
-  descricao      String      @db.VarChar(Max)
-  gravidade      String      @db.VarChar(10) // 'Alta', 'Media', 'Baixa'
-  status         String      @db.VarChar(15) // 'Resolvida', 'Em_Analise', 'Aberta'
+  id_ocorrencia    Int          @id @default(autoincrement())
+  id_apartamento   Int
+  titulo           String       @db.VarChar(100)
+  descricao        String       @db.VarChar(Max)
+  gravidade        String       @db.VarChar(10) // 'Alta', 'Media', 'Baixa'
+  status           String       @db.VarChar(15) // 'Resolvida', 'Em_Analise', 'Aberta'
+  data_criacao     DateTime?    @default(now())
+  data_atualizacao DateTime?    @updatedAt
 
-  apartamento    Apartamento @relation(fields: [id_apartamento], references: [id_apartamento])
+  apartamento      Apartamento  @relation(fields: [id_apartamento], references: [id_apartamento])
 }

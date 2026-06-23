@@ -12,16 +12,12 @@ export class AuthService {
     this.authRepository = new AuthRepository();
   }
 
-  async register({ cpf, nome, email, senha, tipo_usuario, id_apartamento }: RegisterUserDTO) {
+  async register({ cpf, nome, email, senha, tipo_usuario, telefone }: RegisterUserDTO) {
     const userEmailExists = await this.authRepository.findByEmail(email);
-    if (userEmailExists) {
-      throw new AppError("Email already in use");
-    }
+    if (userEmailExists) throw new AppError("Email already in use");
 
     const userCpfExists = await this.authRepository.findByCpf(cpf);
-    if (userCpfExists) {
-      throw new AppError("CPF already in use");
-    }
+    if (userCpfExists) throw new AppError("CPF already in use");
 
     const senha_hash = await hash(senha, 8);
 
@@ -31,7 +27,7 @@ export class AuthService {
       email,
       senha_hash,
       tipo_usuario,
-      apartamento: id_apartamento ? { connect: { id_apartamento } } : undefined
+      telefone
     });
 
     return user;
@@ -40,29 +36,32 @@ export class AuthService {
   async login({ email, senha }: LoginUserDTO) {
     const user = await this.authRepository.findByEmail(email);
 
-    if (!user) {
-      throw new AppError("Incorrect email/password combination", 401);
-    }
+    if (!user) throw new AppError("Incorrect email/password combination", 401);
 
     const passwordMatch = await compare(senha, user.senha_hash);
 
-    if (!passwordMatch) {
-      throw new AppError("Incorrect email/password combination", 401);
-    }
+    if (!passwordMatch) throw new AppError("Incorrect email/password combination", 401);
 
     const secret = process.env.JWT_SECRET || "default_secret";
     
     let id_condominio: number | undefined;
-    if (user.id_apartamento) {
-      const apto = await prismaClient.apartamento.findUnique({ where: { id_apartamento: user.id_apartamento } });
-      if (apto) id_condominio = apto.id_condominio;
+    let id_apartamento: number | undefined;
+    
+    // Pesquisa inversa: O utilizador não possui o apartamento, o apartamento é que aponta para o utilizador.
+    const apto = await prismaClient.apartamento.findFirst({ 
+      where: { id_usuario: user.id_usuario } 
+    });
+
+    if (apto) {
+      id_condominio = apto.id_condominio;
+      id_apartamento = apto.id_apartamento;
     }
 
     const token = sign(
       { 
         tipo_usuario: user.tipo_usuario,
         id_condominio,
-        id_apartamento: user.id_apartamento
+        id_apartamento
       },
       secret,
       {

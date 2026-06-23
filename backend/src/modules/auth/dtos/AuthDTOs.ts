@@ -4,7 +4,7 @@ export interface RegisterUserDTO {
   email: string;
   senha: string;
   tipo_usuario: "Administrador" | "Morador" | "Sindico";
-  id_apartamento?: number;
+  telefone?: string;
 }
 
 export interface LoginUserDTO {

@@ -3,7 +3,7 @@ import { AuthService } from "../services/AuthService";
 
 export class AuthController {
   async register(request: Request, response: Response) {
-    const { cpf, nome, email, senha, tipo_usuario, id_apartamento } = request.body;
+    const { cpf, nome, email, senha, tipo_usuario, telefone } = request.body;
 
     const authService = new AuthService();
 
@@ -13,7 +13,7 @@ export class AuthController {
       email,
       senha,
       tipo_usuario,
-      id_apartamento,
+      telefone
     });
 
     return response.status(201).json(user);
@@ -21,14 +21,8 @@ export class AuthController {
 
   async login(request: Request, response: Response) {
     const { email, senha } = request.body;
-
     const authService = new AuthService();
-
-    const result = await authService.login({
-      email,
-      senha,
-    });
-
+    const result = await authService.login({ email, senha });
     return response.json(result);
   }
 }
