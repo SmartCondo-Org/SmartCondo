@@ -1,16 +1,42 @@
-# React + Vite
+Parte 1: Subindo o Servidor (Backend) --> https://github.com/SmartCondo-Org/SmartCondo-Back
+O Backend é o "motor" da aplicação. Ele precisa estar ligado para que a interface consiga ler e gravar dados.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Parte 2: Subindo a Interface (Frontend)
+O Frontend é a tela com a qual os usuários e gestores vão interagir.
 
-Currently, two official plugins are available:
+Abra uma nova aba/janela do terminal (deixando o terminal do backend aberto e rodando) e navegue até a pasta do frontend (smartcondo).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Instale as dependências do frontend:
 
-## React Compiler
+Bash
+npm install
+Inicie a aplicação no navegador:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Bash
+npm run dev
+O que deve aparecer no terminal: O endereço local (por exemplo, http://localhost:5173). Basta segurar a tecla Ctrl e clicar no link para a aplicação abrir no navegador.
 
-## Expanding the ESLint configuration
+Parte 3: Roteiro de Testes e Demonstração
+Ao abrir a página no navegador (http://localhost:5173), o sistema apresentará a tela de login para validação da LGPD e autenticação.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Acesso Inicial
+Utilize o e-mail e a senha do Administrador (definidos previamente na configuração do banco de dados) para entrar no sistema.
+
+2. Validando o Módulo Financeiro
+Navegue até a aba Financeiro no menu lateral.
+
+Clique no botão "Nova Transação", preencha o formulário com uma Receita ou Despesa e salve.
+
+O extrato financeiro será atualizado imediatamente, recalculando o saldo total em tempo real através da integração com o banco de dados.
+
+3. Validando o Módulo de Ocorrências
+Navegue até a aba Ocorrências no menu lateral.
+
+Visualize os chamados já abertos ou clique em "Registrar Chamado" para abrir uma nova ocorrência, definindo título, descrição e gravidade.
+
+A listagem será atualizada na hora, demonstrando a persistência dos dados.
+
+4. Demonstrando a Responsividade
+Reduza a largura da janela do navegador (ou utilize a ferramenta de inspecionar elemento simulando um dispositivo móvel).
+
+O menu lateral recolherá perfeitamente para o padrão de menu gaveta, provando que a interface se adapta a diferentes tamanhos de tela.
