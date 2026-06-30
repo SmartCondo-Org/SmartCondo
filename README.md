@@ -22,6 +22,11 @@ Ao abrir a página no navegador (http://localhost:5173), o sistema apresentará 
 1. Acesso Inicial
 Utilize o e-mail e a senha do Administrador (definidos previamente na configuração do banco de dados) para entrar no sistema.
 
+Login teste:
+login rafael
+admin.rafael@smartcondo.co
+senha_super_segura2
+
 2. Validando o Módulo Financeiro
 Navegue até a aba Financeiro no menu lateral.
 
